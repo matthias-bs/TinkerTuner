@@ -1,0 +1,17 @@
+default_profile: m5stack-core2
+
+profiles:
+  m5stack-core2:
+    notes: Build for M5Stack Core2
+    fqbn: esp32:esp32:m5stack_core2
+    platforms:
+      - platform: esp32:esp32 (3.3.12)
+        platform_index_url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+    libraries:
+      - ESP32-audioI2S-master (4.0.1)
+      - M5Unified (0.2.26)
+      - M5UnitUnified (0.6.4)
+      - M5Unit-GESTURE (0.3.0)
+      - dependency: M5GFX (0.2.33)
+      - dependency: M5HAL (0.1.4)
+      - dependency: M5Utility (0.3.1)
