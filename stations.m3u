@@ -1,6 +1,6 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="radio_21.png",Radio 21 Braunschweig
-https://stream.radio21.de/radio21_braunschweig.mp3
+#EXTINF:-1 tvg-logo="radio_21.png",Radio 21
+https://radio21.streamabc.net/radio21-hannover-mp3-192-3735655
 #EXTINF:-1 tvg-logo="radio38.png",Radio38
 https://stream.radio38.de/radio38-live/mp3-192
 #EXTINF:-1 tvg-logo="bob_classic_rock.png",BOB! Classic Rock
