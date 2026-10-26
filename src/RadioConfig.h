@@ -30,7 +30,7 @@
 #include <Arduino.h>
 
 #ifndef USE_MAX98357A_PORTS_BC
-#define USE_MAX98357A_PORTS_BC 1
+#define USE_MAX98357A_PORTS_BC 0
 #endif
 
 namespace radio_config {
