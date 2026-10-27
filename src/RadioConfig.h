@@ -29,8 +29,8 @@
 
 #include <Arduino.h>
 
-#ifndef USE_MAX98357A_PORTS_BC
-#define USE_MAX98357A_PORTS_BC 0
+#ifndef USE_I2S_PORTS_BC
+#define USE_I2S_PORTS_BC 0
 #endif
 
 namespace radio_config {
@@ -40,7 +40,7 @@ static constexpr int sdMosi = 23;
 static constexpr int sdMiso = 38;
 static constexpr int sdSck = 18;
 
-#if USE_MAX98357A_PORTS_BC
+#if USE_I2S_PORTS_BC
 static constexpr int i2sDout = 14;
 static constexpr int i2sBclk = 26;
 static constexpr int i2sLrc = 13;

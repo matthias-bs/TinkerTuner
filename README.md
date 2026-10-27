@@ -43,7 +43,7 @@ The playlist uses `#EXTINF` station-name lines followed by an `http://` or
 
 ### Setup 1 &ndash; Minimal
 
-For setup 1 using the Core2 internal speaker, leave `USE_MAX98357A_PORTS_BC` set to `0`.
+For setup 1 using the Core2 internal speaker, leave `USE_I2S_PORTS_BC` set to `0`.
 These I²S connections are internal to the board; no wiring is needed:
 
 | I²S signal | Core2 GPIO |
@@ -58,7 +58,7 @@ These I²S connections are internal to the board; no wiring is needed:
 > Make sure your `PAJ7620U2` gesture sensor module allows 5V supply voltage
 > before connecting it to Port A.
 
-For setup 2's external I²S output, set `USE_MAX98357A_PORTS_BC` to `1` in
+For setup 2's external I²S output, set `USE_I2S_PORTS_BC` to `1` in
 `src/RadioConfig.h`. 
 
 Wire the I²S output device as follows:
