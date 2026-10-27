@@ -57,6 +57,11 @@ void InputController::updateGesture() {
     if (gestureSensor_.updated()) {
       const auto gesture = gestureSensor_.gesture();
       if (gesture != m5::unit::paj7620u2::Gesture::None) {
+        constexpr uint32_t gestureLockoutMs = 300;
+        const uint32_t elapsed = static_cast<uint32_t>(millis()) - lastGestureMillis_;
+        if (gestureLockoutActive_ && elapsed < gestureLockoutMs) {
+          return;
+        }
         executeGesture(gesture);
       }
     }
@@ -69,7 +74,7 @@ void InputController::updateTouch() {
       return;
     }
     if (buttonCActive_) {
-      if (!M5.BtnC.isPressed() && M5.Touch.getCount() == 0) {
+      if (!M5.BtnC.isPressed()) {
         buttonCActive_ = false;
       }
       return;
@@ -127,6 +132,7 @@ void InputController::executeGesture(m5::unit::paj7620u2::Gesture gesture) {
       }
     }
 
+    bool recognized = true;
     switch (gesture) {
       case m5::unit::paj7620u2::Gesture::Left:
         emit(InputAction::NextStation);
@@ -144,7 +150,12 @@ void InputController::executeGesture(m5::unit::paj7620u2::Gesture gesture) {
         emit(InputAction::ToggleMute);
         break;
       default:
+        recognized = false;
         break;
+    }
+    if (recognized) {
+      lastGestureMillis_ = static_cast<uint32_t>(millis());
+      gestureLockoutActive_ = true;
     }
 }
 

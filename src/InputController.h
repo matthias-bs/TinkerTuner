@@ -55,6 +55,8 @@ private:
     bool gestureEnabled_ = true;
     bool buttonCActive_ = false;
     bool touchActive_ = false;
+    bool gestureLockoutActive_ = false;
+    uint32_t lastGestureMillis_ = 0;
     int16_t touchStartX_ = 0;
     int16_t touchStartY_ = 0;
 };

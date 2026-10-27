@@ -15,6 +15,8 @@ controls. An optional gesture sensor (`PAJ7620U2`) can provide hands-free contro
   controls. The setting is saved in preferences.
 - With the gesture sensor, move left/right to change station,
   up/down to adjust volume, or forward to mute/unmute.
+  A short lockout after each gesture prevents the hand's withdrawal from being
+  interpreted as a second gesture.
 
 ## Quick Start
 
