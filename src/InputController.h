@@ -39,6 +39,9 @@ public:
     void configureTouch();
     void updateGesture();
     void updateTouch();
+    bool gestureSensorAvailable() const;
+    bool gestureEnabled() const;
+    void setGestureEnabled(bool enabled);
 
 private:
     void executeGesture(m5::unit::paj7620u2::Gesture gesture);
@@ -49,6 +52,8 @@ private:
     ActionHandler handler_ = nullptr;
     void* context_ = nullptr;
     bool gestureSensorAvailable_ = false;
+    bool gestureEnabled_ = true;
+    bool buttonCActive_ = false;
     bool touchActive_ = false;
     int16_t touchStartX_ = 0;
     int16_t touchStartY_ = 0;

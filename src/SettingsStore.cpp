@@ -33,13 +33,15 @@
 PersistentSettings SettingsStore::load() {
     PersistentSettings settings;
     settings.volume = radio_config::defaultVolume;
+    settings.gestureEnabled = true;
     if (!preferences_.begin(radio_config::preferencesNamespace, false)) {
-      Serial.println("Could not open NVS preferences; using default volume and station");
+      Serial.println("Could not open NVS preferences; using default radio settings");
       return settings;
     }
     ready_ = true;
     settings.volume = preferences_.getUChar("volume", radio_config::defaultVolume);
     settings.stationIndex = preferences_.getUInt("station", 0);
+    settings.gestureEnabled = preferences_.getBool("gesture", true);
     if (settings.volume > 21) {
       Serial.printf("Stored volume %u is invalid; using default\n", radio_config::defaultVolume);
       settings.volume = radio_config::defaultVolume;
@@ -57,7 +59,7 @@ void SettingsStore::markChanged() {
     changedAt_ = millis();
 }
 
-void SettingsStore::saveIfDue(uint8_t volume, size_t stationIndex, bool hasStations) {
+void SettingsStore::saveIfDue(uint8_t volume, size_t stationIndex, bool hasStations, bool gestureEnabled) {
     if (!ready_ || !dirty_ || millis() - changedAt_ < radio_config::preferencesSaveDelayMs) {
       return;
     }
@@ -72,5 +74,9 @@ void SettingsStore::saveIfDue(uint8_t volume, size_t stationIndex, bool hasStati
       if (stationBytes != sizeof(uint32_t)) {
         Serial.println("Could not persist station preference");
       }
+    }
+    const size_t gestureBytes = preferences_.putBool("gesture", gestureEnabled);
+    if (gestureBytes != sizeof(bool)) {
+      Serial.println("Could not persist gesture preference");
     }
 }

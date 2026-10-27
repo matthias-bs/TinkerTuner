@@ -37,6 +37,7 @@ public:
     void setWifiConfigMessage(const String& message);
     void setLogoPaths(const String& localPath, const String& remoteUrl);
     void showVolumeFeedback(uint8_t volume, bool muted);
+    void showGestureFeedback(bool enabled);
     void refreshVolumeFeedback();
     void update();
 
@@ -45,7 +46,12 @@ private:
     void drawTitle(bool force);
     bool drawLocalStationLogo(const char* path);
     void drawStationLogo();
-    void drawVolumeFeedback();
+    void drawFeedback();
+
+    enum class FeedbackType {
+        Volume,
+        Gesture
+    };
 
     String stationName_;
     String displayedTitle_ = "Waiting...";
@@ -59,5 +65,7 @@ private:
     uint32_t volumeFeedbackUntil_ = 0;
     uint8_t feedbackVolume_ = 0;
     bool feedbackMuted_ = false;
+    bool feedbackGestureEnabled_ = true;
+    FeedbackType feedbackType_ = FeedbackType::Volume;
     bool volumeFeedbackVisible_ = false;
 };

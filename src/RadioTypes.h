@@ -43,6 +43,7 @@ struct WifiCredential {
 struct PersistentSettings {
     uint32_t stationIndex = 0;
     uint8_t volume = 3;
+    bool gestureEnabled = true;
 };
 
 enum class InputAction {
@@ -50,5 +51,6 @@ enum class InputAction {
     PreviousStation,
     VolumeUp,
     VolumeDown,
-    ToggleMute
+    ToggleMute,
+    ToggleGesture
 };

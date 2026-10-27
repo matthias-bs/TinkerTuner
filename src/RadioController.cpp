@@ -50,6 +50,8 @@ void RadioController::begin() {
     const PersistentSettings settings = settingsStore_.load();
     savedVolume_ = settings.volume;
     savedStationIndex_ = settings.stationIndex;
+    gestureEnabled_ = settings.gestureEnabled;
+    input_.setGestureEnabled(gestureEnabled_);
 
     M5.Speaker.end();
     switch (M5.Power.getType()) {
@@ -134,7 +136,8 @@ void RadioController::update() {
     display_.update();
     settingsStore_.saveIfDue(audio_.getVolume(),
                              static_cast<size_t>(currentStationIndex_),
-                             !stations_.empty());
+                             !stations_.empty(),
+                             gestureEnabled_);
 
     if (Serial.available()) {
       audio_.stopSong();
@@ -204,6 +207,9 @@ void RadioController::handleInputAction(InputAction action) {
       case InputAction::ToggleMute:
         toggleMute();
         break;
+      case InputAction::ToggleGesture:
+        toggleGesture();
+        break;
     }
 }
 
@@ -266,6 +272,16 @@ void RadioController::adjustVolume(int direction) {
 void RadioController::toggleMute() {
     audio_.setMute(!audio_.getMute());
     display_.showVolumeFeedback(audio_.getVolume(), audio_.getMute());
+}
+
+void RadioController::toggleGesture() {
+    if (!input_.gestureSensorAvailable()) {
+      return;
+    }
+    gestureEnabled_ = !input_.gestureEnabled();
+    input_.setGestureEnabled(gestureEnabled_);
+    settingsStore_.markChanged();
+    display_.showGestureFeedback(gestureEnabled_);
 }
 
 void RadioController::updateStreamMetadata() {

@@ -52,6 +52,7 @@ private:
     void changeStation(int direction);
     void adjustVolume(int direction);
     void toggleMute();
+    void toggleGesture();
     void updateStreamMetadata();
 
     static RadioController* instance_;
@@ -65,6 +66,7 @@ private:
     size_t currentStationIndex_ = 0;
     uint32_t savedStationIndex_ = 0;
     uint8_t savedVolume_ = 3;
+    bool gestureEnabled_ = true;
     String activeStationName_ = "NDR 2";
     String activeStationUrl_ = "http://icecast.ndr.de/ndr/ndr2/hamburg/mp3/128/stream.mp3";
     String activeStationLogoPath_ = "/ndr2.png";

@@ -68,21 +68,31 @@ void DisplayController::setLogoPaths(const String& localPath, const String& remo
     remoteLogoUrl_ = remoteUrl;
     drawStationLogo();
     if (volumeFeedbackVisible_) {
-      drawVolumeFeedback();
+      drawFeedback();
     }
 }
 
 void DisplayController::showVolumeFeedback(uint8_t volume, bool muted) {
     feedbackVolume_ = volume;
     feedbackMuted_ = muted;
+    feedbackType_ = FeedbackType::Volume;
     volumeFeedbackVisible_ = true;
     volumeFeedbackUntil_ = millis() + 1200;
-    drawVolumeFeedback();
+    drawFeedback();
+}
+
+void DisplayController::showGestureFeedback(bool enabled) {
+    feedbackGestureEnabled_ = enabled;
+    feedbackMuted_ = false;
+    feedbackType_ = FeedbackType::Gesture;
+    volumeFeedbackVisible_ = true;
+    volumeFeedbackUntil_ = millis() + 1200;
+    drawFeedback();
 }
 
 void DisplayController::refreshVolumeFeedback() {
     if (volumeFeedbackVisible_) {
-      drawVolumeFeedback();
+      drawFeedback();
     }
 }
 
@@ -230,11 +240,14 @@ void DisplayController::drawStationLogo() {
     }
 }
 
-void DisplayController::drawVolumeFeedback() {
+void DisplayController::drawFeedback() {
     const int logoY = M5.Lcd.height() / 2;
     M5.Lcd.fillRect(0, logoY, M5.Lcd.width(), M5.Lcd.fontHeight() + 8, BLACK);
     char feedback[24];
-    if (feedbackMuted_) {
+    if (feedbackType_ == FeedbackType::Gesture) {
+      snprintf(feedback, sizeof(feedback), "Gesture %s",
+               feedbackGestureEnabled_ ? "On" : "Off");
+    } else if (feedbackMuted_) {
       snprintf(feedback, sizeof(feedback), "Muted");
     } else {
       snprintf(feedback, sizeof(feedback), "Volume %u", feedbackVolume_);

@@ -4,11 +4,13 @@
 
 TinkerTuner is an internet radio for the M5Stack Core2. It streams stations
 listed on the SD card, displays station and stream information, and supports touch
-controls. An optional gesture sensor can provide hands-free controls.
+controls. An optional gesture sensor (`PAJ7620U2`) can provide hands-free controls.
 
 - Tap to mute or unmute; swipe left/right to change station and up/down to
   adjust volume.
-- With the gesture sensor (`PAJ7620U2`), move left/right to change station,
+- If a gesture sensor is connected, press button C to enable or disable gesture
+  controls. The setting is saved in preferences.
+- With the gesture sensor, move left/right to change station,
   up/down to adjust volume, or forward to mute/unmute.
 
 ## Quick Start

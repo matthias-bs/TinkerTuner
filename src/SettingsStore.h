@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // SettingsStore.h
 //
-// Declares persistent settings storage for volume and station selection.
+// Declares persistent settings storage for volume, station selection, and gestures.
 //
 // TinkerTuner -- I2S internet radio for M5Stack Core2
 // https://github.com/matthias-bs/TinkerTuner
@@ -34,7 +34,7 @@ class SettingsStore {
 public:
     PersistentSettings load();
     void markChanged();
-    void saveIfDue(uint8_t volume, size_t stationIndex, bool hasStations);
+    void saveIfDue(uint8_t volume, size_t stationIndex, bool hasStations, bool gestureEnabled);
 
 private:
     Preferences preferences_;

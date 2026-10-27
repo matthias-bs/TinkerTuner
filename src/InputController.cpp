@@ -50,7 +50,7 @@ void InputController::configureTouch() {
 }
 
 void InputController::updateGesture() {
-    if (!gestureSensorAvailable_) {
+    if (!gestureSensorAvailable_ || !gestureEnabled_) {
       return;
     }
     gestureUnits_.update();
@@ -63,9 +63,21 @@ void InputController::updateGesture() {
 }
 
 void InputController::updateTouch() {
+    if (gestureSensorAvailable_ && M5.BtnC.wasPressed()) {
+      buttonCActive_ = true;
+      emit(InputAction::ToggleGesture);
+      return;
+    }
+    if (buttonCActive_) {
+      if (!M5.BtnC.isPressed() && M5.Touch.getCount() == 0) {
+        buttonCActive_ = false;
+      }
+      return;
+    }
     if (M5.Touch.getCount() == 0) {
       return;
     }
+
     const auto& touch = M5.Touch.getDetail(0);
     if (touch.wasPressed()) {
       touchStartX_ = touch.x;
@@ -92,6 +104,18 @@ void InputController::updateTouch() {
     } else if (absY >= minimumSwipeDistance && absY >= absX * 1.4f) {
       emit(deltaY < 0 ? InputAction::VolumeUp : InputAction::VolumeDown);
     }
+}
+
+bool InputController::gestureSensorAvailable() const {
+    return gestureSensorAvailable_;
+}
+
+bool InputController::gestureEnabled() const {
+    return gestureEnabled_;
+}
+
+void InputController::setGestureEnabled(bool enabled) {
+    gestureEnabled_ = enabled;
 }
 
 void InputController::executeGesture(m5::unit::paj7620u2::Gesture gesture) {
