@@ -63,6 +63,7 @@ Wire the I²S output device as follows:
 | Port B or C `GND` | `GND` |
 
 Connect grounds and follow the output device's power and load requirements.
+Use a suitable external regulated supply if the Core2/M5GO2 5 V rail cannot provide the voltage or current required by the amplifier. Use speakers within the amplifier's supported impedance and power ratings.
 
 Setup 3 and 4 have not been implemented yet.
 
