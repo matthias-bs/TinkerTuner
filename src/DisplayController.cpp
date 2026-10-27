@@ -89,7 +89,7 @@ void DisplayController::refreshVolumeFeedback() {
 void DisplayController::update() {
     drawStationName(false);
     drawTitle(false);
-    if (volumeFeedbackVisible_
+    if (volumeFeedbackVisible_ && !feedbackMuted_
         && static_cast<int32_t>(millis() - volumeFeedbackUntil_) >= 0) {
       volumeFeedbackVisible_ = false;
       drawStationLogo();
