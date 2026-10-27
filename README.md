@@ -1,3 +1,6 @@
+> [!CAUTION]
+> Parts of this project were created or assisted by AI tools.
+
 # TinkerTuner
 
 ## Overview
