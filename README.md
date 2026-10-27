@@ -8,8 +8,8 @@ controls. An optional gesture sensor can provide hands-free controls.
 
 - Tap to mute or unmute; swipe left/right to change station and up/down to
   adjust volume.
-- With the gesture sensor, move left/right to change station, up/down to
-  adjust volume, or forward to mute/unmute.
+- With the gesture sensor (`PAJ7620U2`), move left/right to change station,
+  up/down to adjust volume, or forward to mute/unmute.
 
 ## Quick Start
 
@@ -41,6 +41,8 @@ The playlist uses `#EXTINF` station-name lines followed by an `http://` or
 | 3. Prototype | Optional gesture sensor and/or external I²S output via M5 Proto Module. | TBD |
 | 4. Final | Custom gesture sensor and I²S interface module. | TBD |
 
+### Setup 1 &ndash; Minimal
+
 For setup 1 using the Core2 internal speaker, leave `USE_MAX98357A_PORTS_BC` set to `0`.
 These I²S connections are internal to the board; no wiring is needed:
 
@@ -49,6 +51,12 @@ These I²S connections are internal to the board; no wiring is needed:
 | `BCLK` / `BCK` | `GPIO12` |
 | `LRC` / `WS` / `LRCLK` | `GPIO0` |
 | Data output (`DOUT`) | `GPIO2` |
+
+### Setup 2 &ndash; Prototype
+
+> ![WARNING]
+> Make sure your `PAJ7620U2` gesture sensor module allows 5V supply voltage
+> before connecting it to Port A.
 
 For setup 2's external I²S output, set `USE_MAX98357A_PORTS_BC` to `1` in
 `src/RadioConfig.h`. 
@@ -64,6 +72,8 @@ Wire the I²S output device as follows:
 
 Connect grounds and follow the output device's power and load requirements.
 Use a suitable external regulated supply if the Core2/M5GO2 5 V rail cannot provide the voltage or current required by the amplifier. Use speakers within the amplifier's supported impedance and power ratings.
+
+### Setup 3 & 4
 
 Setup 3 and 4 have not been implemented yet.
 
