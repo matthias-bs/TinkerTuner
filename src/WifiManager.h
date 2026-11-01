@@ -28,6 +28,7 @@
 #pragma once
 
 #include "RadioTypes.h"
+#include <FS.h>
 #include <vector>
 
 enum class WifiEvent {
@@ -38,13 +39,14 @@ enum class WifiEvent {
 
 class RadioWifiManager {
 public:
-    bool loadCredentials(bool sdReady);
+    bool loadCredentials(bool& sdReady);
     void begin();
     WifiEvent update(bool& sdReady);
     const String& configDisplayMessage() const;
 
 private:
-    bool loadCredentialsFile(bool sdReady);
+    bool loadCredentialsFile(bool& sdReady);
+    bool parseCredentialsFile(File& credentialFile);
 
     std::vector<WifiCredential> credentials_;
     size_t attemptIndex_ = 0;
