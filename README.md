@@ -20,11 +20,15 @@ controls. An optional gesture sensor (`PAJ7620U2`) can provide hands-free contro
 
 ## Quick Start
 
-1. Prepare an SD card with `stations.m3u` and `wifi-credentials.txt` in its
-   root directory. The repository's `stations.m3u` is an example playlist;
-   edit it to add your stations.
-   Optionally add stadion logos as PNG files (120 x 120 pixels)
-2. Connect the Core2 over USB and, from this sketch directory, compile and
+1. Prepare the WiFi credentials using one of these options:
+   - Put `wifi-credentials.txt` in the SD card's root directory.
+   - For the internal-flash variant, put `wifi-credentials.txt` in the
+     repository's `data/` directory and upload it with the Arduino IDE's
+     **ESP32 LittleFS Data Upload** tool as described below.
+2. Prepare the SD card with `stations.m3u` in its root directory. The
+   repository's `stations.m3u` is an example playlist; edit it to add your
+   stations. Optionally add station logos as PNG files (120 x 120 pixels).
+3. Connect the Core2 over USB and, from this sketch directory, compile and
    upload with Arduino CLI:
 
    ```sh
@@ -32,7 +36,7 @@ controls. An optional gesture sensor (`PAJ7620U2`) can provide hands-free contro
    arduino-cli upload --profile m5stack-core2 -p <serial-port> .
    ```
 
-3. Insert the SD card and start the Core2. The radio connects to the first
+4. Insert the SD card and start the Core2. The radio connects to the first
    available configured Wi-Fi network and starts a station from the playlist.
 
 The board profile and library dependencies are declared in `sketch.yaml`.
@@ -90,7 +94,9 @@ The project's final target is a separate class D amplifier connected via I2S. Ca
 
 ## WiFi Credentials
 
-Create `wifi-credentials.txt` in the SD card root. Add up to three networks
+Create `wifi-credentials.txt` in the internal flash filesystem at its root, or
+in the SD card root as a fallback. The internal flash file is tried first and
+is preferred because it adds a little security. Add up to three networks
 in preference order, with an `SSID=` line followed by a `PASSWORD=` line
 for each:
 
@@ -108,8 +114,32 @@ keys. Values are trimmed and split at the first `=`, so passwords can contain
 additional equals signs. SSIDs must be 1–32 bytes; passwords may be empty or
 up to 64 bytes.
 
+### Uploading credentials to internal flash with Arduino IDE
+
+Create a `data/` directory in the repository if it does not already exist and
+put `wifi-credentials.txt` directly in it:
+
+```text
+TinkerTuner/
+└── data/
+    └── wifi-credentials.txt
+```
+
+Install [arduino-littlefs-upload](https://github.com/earlephilhower/arduino-littlefs-upload)
+for Arduino IDE 2.2.1 or newer: copy its release VSIX file to
+`~/.arduinoIDE/plugins/` on Linux/macOS or
+`C:\Users\<username>\.arduinoIDE\plugins\` on Windows, creating the directory
+if needed, then restart the IDE. Select the M5Stack Core2 board and its serial
+port, and close Serial Monitor or any other program using the port. Open the
+command palette with **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS), then select
+**Upload LittleFS to Pico/ESP8266/ESP32**.
+The tool uploads the contents of `data/` to the board's internal LittleFS
+filesystem. Reset the board after the upload. The application then reads
+`/wifi-credentials.txt` from internal flash before checking the SD card.
+
 Credentials are stored in plaintext: keep the file private and do not commit
-or share a populated copy. There is no embedded-credential fallback. Each
+or share a populated copy. If the internal flash file is missing or invalid,
+the SD card file is used. Each
 network is tried for up to 15 seconds; if none connect, the sketch cycles
 through the list again after a pause. If the SD card or credentials file is
 unavailable, the sketch reports the problem over Serial and checks again
@@ -123,5 +153,6 @@ Audio playback is provided by
 
 ## References
 
+* [arduino-littlefs-upload](https://github.com/earlephilhower/arduino-littlefs-upload)
 * [Internet radio stations (de)](https://wiki.ubuntuusers.de/Internetradio/Stationen/)
 * [M5Stack Unit Gesture](https://docs.m5stack.com/en/unit/Unit_Gesture)

@@ -28,17 +28,47 @@
 #include "WifiManager.h"
 
 #include "RadioConfig.h"
+#include <LittleFS.h>
 #include <SD.h>
 #include <SPI.h>
 #include <WiFi.h>
 
-bool RadioWifiManager::loadCredentials(bool sdReady) {
+bool RadioWifiManager::loadCredentials(bool& sdReady) {
     return loadCredentialsFile(sdReady);
 }
 
-bool RadioWifiManager::loadCredentialsFile(bool sdReady) {
+bool RadioWifiManager::loadCredentialsFile(bool& sdReady) {
     credentials_.clear();
     lastFileLoadAt_ = millis();
+
+    if (LittleFS.begin(false)) {
+      File credentialFile = LittleFS.open(radio_config::wifiCredentialsPath, FILE_READ);
+      if (credentialFile) {
+        Serial.printf("Loading WiFi credentials from internal flash: %s\n",
+                      radio_config::wifiCredentialsPath);
+        if (credentialFile.size() <= 4096 && parseCredentialsFile(credentialFile)) {
+          credentialFile.close();
+          configDisplayMessage_ = "";
+          return true;
+        }
+        if (credentialFile.size() > 4096) {
+          Serial.printf("WiFi credentials file is too large: %s\n",
+                        radio_config::wifiCredentialsPath);
+        }
+        credentialFile.close();
+      } else {
+        Serial.printf("WiFi credentials file not found in internal flash: %s\n",
+                      radio_config::wifiCredentialsPath);
+      }
+      credentials_.clear();
+    } else {
+      Serial.println("Internal flash filesystem is unavailable");
+    }
+
+    Serial.println("Falling back to SD card for WiFi credentials");
+    if (!sdReady) {
+      sdReady = SD.begin(radio_config::sdCs, SPI, 1000000);
+    }
     if (!sdReady) {
       Serial.println("Cannot load WiFi credentials: SD card is unavailable");
       configDisplayMessage_ = "WiFi config unavailable";
@@ -58,6 +88,21 @@ bool RadioWifiManager::loadCredentialsFile(bool sdReady) {
       return false;
     }
 
+    Serial.printf("Loading WiFi credentials from SD card: %s\n",
+                  radio_config::wifiCredentialsPath);
+    if (!parseCredentialsFile(credentialFile)) {
+      credentialFile.close();
+      configDisplayMessage_ = "WiFi config invalid";
+      return false;
+    }
+    credentialFile.close();
+    configDisplayMessage_ = "";
+    Serial.printf("Loaded %u WiFi credential entr(y/ies)\n",
+                  static_cast<unsigned>(credentials_.size()));
+    return true;
+}
+
+bool RadioWifiManager::parseCredentialsFile(File& credentialFile) {
     String pendingSsid;
     bool hasPendingSsid = false;
     while (credentialFile.available()) {
@@ -116,19 +161,13 @@ bool RadioWifiManager::loadCredentialsFile(bool sdReady) {
       pendingSsid = "";
       hasPendingSsid = false;
     }
-    credentialFile.close();
-
     if (hasPendingSsid) {
       Serial.println("Ignoring final WiFi entry without a PASSWORD setting");
     }
     if (credentials_.empty()) {
       Serial.println("WiFi credentials file contains no valid network entries");
-      configDisplayMessage_ = "WiFi config invalid";
       return false;
     }
-    configDisplayMessage_ = "";
-    Serial.printf("Loaded %u WiFi credential entr(y/ies)\n",
-                  static_cast<unsigned>(credentials_.size()));
     return true;
 }
 
@@ -180,14 +219,6 @@ WifiEvent RadioWifiManager::update(bool& sdReady) {
 
     if (now - lastFileLoadAt_ >= radio_config::wifiFileReloadDelayMs
         && credentials_.empty()) {
-      if (!sdReady) {
-        sdReady = SD.begin(radio_config::sdCs, SPI, 1000000);
-        if (!sdReady) {
-          lastFileLoadAt_ = now;
-          Serial.println("SD card is still unavailable; will retry WiFi configuration later");
-          return event;
-        }
-      }
       loadCredentialsFile(sdReady);
       attemptIndex_ = 0;
       nextAttemptAt_ = now + radio_config::wifiRetryDelayMs;
