@@ -96,7 +96,7 @@ The project's final target is a separate class D amplifier connected via I2S. Ca
 
 Create `wifi-credentials.txt` in the internal flash filesystem at its root, or
 in the SD card root as a fallback. The internal flash file is tried first and
-is preferred because it is not removable. Add up to three networks
+is preferred because it adds a little security. Add up to three networks
 in preference order, with an `SSID=` line followed by a `PASSWORD=` line
 for each:
 
