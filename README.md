@@ -125,9 +125,14 @@ TinkerTuner/
     └── wifi-credentials.txt
 ```
 
-Install the **ESP32 LittleFS Data Upload** tool for Arduino IDE, select the
-M5Stack Core2 board and its serial port, and close Serial Monitor or any other
-program using the port. Then select **Tools > ESP32 LittleFS Data Upload**.
+Install [arduino-littlefs-upload](https://github.com/earlephilhower/arduino-littlefs-upload)
+for Arduino IDE 2.2.1 or newer: copy its release VSIX file to
+`~/.arduinoIDE/plugins/` on Linux/macOS or
+`C:\Users\<username>\.arduinoIDE\plugins\` on Windows, creating the directory
+if needed, then restart the IDE. Select the M5Stack Core2 board and its serial
+port, and close Serial Monitor or any other program using the port. Open the
+command palette with **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS), then select
+**Upload LittleFS to Pico/ESP8266/ESP32**.
 The tool uploads the contents of `data/` to the board's internal LittleFS
 filesystem. Reset the board after the upload. The application then reads
 `/wifi-credentials.txt` from internal flash before checking the SD card.
